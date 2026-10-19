@@ -1,1 +1,122 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+// Generates the summary report and saves it to summary.txt.
+private void GenerateSummaryReport()
+{
+    try
+    {
+        
+        int totalAnimals = animals.Count;
 
+        double averageAge = 0;
+        double averageScore = 0;
+
+        if (totalAnimals > 0)
+        {
+            averageAge = animals.Average(a => a.Age);
+            averageScore = animals.Average(a => a.RecoveryScore);
+        }
+
+        string[] statuses =
+        {
+            "Critical",
+            "Serious",
+            "Stable",
+            "Recovering",
+            "Release-Ready"
+        };
+
+        StringBuilder report = new StringBuilder();
+
+        report.AppendLine(
+            "BAOBAB RIDGE WILDLIFE REHABILITATION CENTRE");
+        report.AppendLine("ANIMAL SUMMARY REPORT");
+
+        report.AppendLine(
+            "Generated: " +
+            DateTime.Now.ToString("yyyy-MM-dd HH:mm"));
+
+        report.AppendLine(
+            "----------------------------------------");
+
+        report.AppendLine(
+            $"Total animals:            {totalAnimals}");
+
+        string ageText = totalAnimals == 0
+            ? "N/A"
+            : averageAge.ToString("F2",
+                CultureInfo.InvariantCulture);
+
+        string scoreText = totalAnimals == 0
+            ? "N/A"
+            : averageScore.ToString("F2",
+                CultureInfo.InvariantCulture);
+
+        report.AppendLine(
+            $"Average age (years):      {ageText}");
+
+        report.AppendLine(
+            $"Average recovery score:   {scoreText}");
+
+        report.AppendLine(
+            "----------------------------------------");
+
+        report.AppendLine("Animals per status:");
+
+        foreach (string status in statuses)
+        {
+            int count = animals.Count(
+                a => a.Status == status);
+
+            report.AppendLine(
+                $"  {status + ":",-24}{count}");
+        }
+
+       
+        string filePath = Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "summary.txt");
+
+        File.WriteAllText(
+            filePath,
+            report.ToString(),
+            new UTF8Encoding(false));
+
+       
+        txtSummary.Text = report.ToString();
+
+        MessageBox.Show(
+            "Summary report generated successfully.",
+            "Summary Report",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Information);
+    }
+    catch (IOException)
+    {
+        MessageBox.Show(
+            "The summary report could not be saved. " +
+            "Please check whether the file is in use.",
+            "File Error",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Warning);
+    }
+    catch (UnauthorizedAccessException)
+    {
+        MessageBox.Show(
+            "You do not have permission to save the summary report.",
+            "Permission Error",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Warning);
+    }
+}
+
+private void btnGenerateSummary_Click(
+    object sender, EventArgs e)
+{
+    GenerateSummaryReport();
+}
