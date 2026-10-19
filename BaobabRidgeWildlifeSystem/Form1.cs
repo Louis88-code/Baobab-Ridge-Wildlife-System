@@ -6,5 +6,15 @@ namespace BaobabRidgeWildlifeSystem
         {
             InitializeComponent();
         }
+
+        private void lblAnimalId_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
