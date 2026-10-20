@@ -8,10 +8,10 @@ namespace BaobabRidgeWildlifeSystem
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+
+            // View Animals is the main screen. Add and Update open from its buttons.
+            Application.Run(new ViewAnimals());
         }
     }
 }

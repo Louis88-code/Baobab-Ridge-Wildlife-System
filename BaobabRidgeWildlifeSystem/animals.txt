@@ -1,0 +1,10 @@
+WR-0001|Naledi|Vervet Monkey|5|70|Recovering|Outdoor Enclosure
+WR-0002|Tau|African Elephant|12|88|Release-Ready|Pre-Release Camp
+WR-0003|Zola|Cape Fox|2|15|Critical|Intensive Care Unit
+WR-0004|Kganya|Spotted Eagle-Owl|6|72|Recovering|Outdoor Enclosure
+WR-0005|Bongi|Meerkat|3|38|Serious|High-Dependency Ward
+WR-0006|Lerato|Southern Ground Hornbill|7|91|Release-Ready|Pre-Release Camp
+WR-0007|Sipho|Greater Kudu|9|45|Stable|Recovery Ward
+WR-0008|Amara|African Wild Dog|5|28|Serious|High-Dependency Ward
+WR-0009|Thabo|Chacma Baboon|8|8|Critical|Intensive Care Unit
+WR-0010|Nala|African Lion|11|66|Recovering|Outdoor Enclosure
