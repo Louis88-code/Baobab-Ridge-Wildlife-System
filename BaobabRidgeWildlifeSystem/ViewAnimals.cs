@@ -12,11 +12,28 @@ namespace BaobabRidgeWildlifeSystem
 
         private void Form1_Shown(object? sender, EventArgs e)
         {
-            // Load records automatically when the form opens.
-            LoadAnimals();
+            try
+            {
+                // Load records automatically when the form opens.
+                LoadAnimals();
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, "Could not open the animal records.");
+            }
         }
 
-        private void LoadButton_Click(object? sender, EventArgs e) => LoadAnimals();
+        private void LoadButton_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                LoadAnimals();
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, "Could not load the animal records.");
+            }
+        }
 
         private void LoadAnimals()
         {
@@ -40,17 +57,12 @@ namespace BaobabRidgeWildlifeSystem
                 SetHeader("Status", "Status");
                 SetHeader("HousingUnit", "Housing Unit");
             }
-            catch (Exception ex) when (
-                ex is IOException ||
-                ex is UnauthorizedAccessException ||
-                ex is ArgumentException ||
-                ex is InvalidDataException)
+            catch (Exception ex)
             {
                 animalsGrid.DataSource = null;
                 countLabel.Text = "0 animal records";
                 statusLabel.Text = "Unable to load animal records.";
-                MessageBox.Show(ex.Message, "Animal File Loading Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ExceptionHandler.Handle(ex, "Animal records could not be loaded.");
             }
             finally
             {
@@ -60,53 +72,74 @@ namespace BaobabRidgeWildlifeSystem
 
         private void SetHeader(string propertyName, string headerText)
         {
-            if (animalsGrid.Columns.Contains(propertyName)) animalsGrid.Columns[propertyName].HeaderText = headerText;
+            try
+            {
+                if (animalsGrid.Columns.Contains(propertyName)) animalsGrid.Columns[propertyName].HeaderText = headerText;
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, "Could not set the column heading.");
+            }
         }
 
         // opens the Add Animal form, then refreshes the grid when it closes
         private void AddButton_Click(object? sender, EventArgs e)
         {
-            using (var addForm = new AddAnimal())
+            try
             {
-                addForm.ShowDialog(this);
-            }
+                using (var addForm = new AddAnimal())
+                {
+                    addForm.ShowDialog(this);
+                }
 
-            LoadAnimals();
+                LoadAnimals();
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, "Could not open the Add Animal screen.");
+            }
         }
 
         // opens the Update Animal form, then refreshes the grid when it closes
         private void UpdateButton_Click(object? sender, EventArgs e)
         {
-            using (var updateForm = new UpdateAnimal())
+            try
             {
-                updateForm.ShowDialog(this);
-            }
+                using (var updateForm = new UpdateAnimal())
+                {
+                    updateForm.ShowDialog(this);
+                }
 
-            LoadAnimals();
+                LoadAnimals();
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, "Could not open the Update Animal screen.");
+            }
         }
 
         private void DeleteButton_Click(object? sender, EventArgs e)
         {
-            if (animalsGrid.CurrentRow == null)
-            {
-                MessageBox.Show("Please select an animal to delete.");
-                return;
-            }
-
-            string recordId = animalsGrid.CurrentRow
-                .Cells["RecordId"].Value?.ToString() ?? "";
-
-            DialogResult answer = MessageBox.Show(
-                $"Are you sure you want to delete animal {recordId}?",
-                "Confirm Deletion",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning);
-
-            if (answer != DialogResult.Yes)
-                return;
-
             try
             {
+                if (animalsGrid.CurrentRow == null)
+                {
+                    MessageBox.Show("Please select an animal to delete.");
+                    return;
+                }
+
+                string recordId = animalsGrid.CurrentRow
+                    .Cells["RecordId"].Value?.ToString() ?? "";
+
+                DialogResult answer = MessageBox.Show(
+                    $"Are you sure you want to delete animal {recordId}?",
+                    "Confirm Deletion",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning);
+
+                if (answer != DialogResult.Yes)
+                    return;
+
                 var fileService = new AnimalFileService();
 
                 if (fileService.DeleteAnimal(recordId))
@@ -119,12 +152,22 @@ namespace BaobabRidgeWildlifeSystem
                     MessageBox.Show("Animal not found in the file.");
                 }
             }
-            catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
+            catch (Exception ex)
             {
-                MessageBox.Show($"Could not delete animal: {ex.Message}");
+                ExceptionHandler.Handle(ex, "Could not delete the animal.");
             }
         }
 
-        private void CloseButton_Click(object? sender, EventArgs e) => Close();
+        private void CloseButton_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                Close();
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, "Could not close the window.");
+            }
+        }
     }
 }
