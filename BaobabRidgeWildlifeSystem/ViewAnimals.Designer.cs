@@ -11,6 +11,7 @@ namespace BaobabRidgeWildlifeSystem
         private Button addButton;
         private Button updateButton;
         private Button deleteButton;
+        private Button summaryButton;
         private Button closeButton;
         private DataGridView animalsGrid;
         private Panel footerPanel;
@@ -37,6 +38,7 @@ namespace BaobabRidgeWildlifeSystem
             addButton = new Button();
             updateButton = new Button();
             deleteButton = new Button();
+            summaryButton = new Button();
             closeButton = new Button();
             animalsGrid = new DataGridView();
             footerPanel = new Panel();
@@ -88,6 +90,7 @@ namespace BaobabRidgeWildlifeSystem
             actionPanel.Controls.Add(addButton);
             actionPanel.Controls.Add(updateButton);
             actionPanel.Controls.Add(deleteButton);
+            actionPanel.Controls.Add(summaryButton);
             actionPanel.Controls.Add(closeButton);
             actionPanel.Dock = DockStyle.Top;
             actionPanel.Location = new Point(0, 90);
@@ -165,6 +168,23 @@ namespace BaobabRidgeWildlifeSystem
             deleteButton.UseVisualStyleBackColor = false;
             deleteButton.Click += DeleteButton_Click;
             // 
+            // summaryButton
+            // 
+            summaryButton.BackColor = Color.White;
+            summaryButton.Cursor = Cursors.Hand;
+            summaryButton.FlatAppearance.BorderColor = Color.FromArgb(190, 200, 190);
+            summaryButton.FlatAppearance.MouseOverBackColor = Color.FromArgb(232, 241, 232);
+            summaryButton.FlatStyle = FlatStyle.Flat;
+            summaryButton.Font = new Font("Segoe UI", 9.5F);
+            summaryButton.ForeColor = Color.FromArgb(45, 65, 50);
+            summaryButton.Location = new Point(532, 12);
+            summaryButton.Name = "summaryButton";
+            summaryButton.Size = new Size(130, 40);
+            summaryButton.TabIndex = 4;
+            summaryButton.Text = "Summary Report";
+            summaryButton.UseVisualStyleBackColor = false;
+            summaryButton.Click += SummaryButton_Click;
+            // 
             // closeButton
             // 
             closeButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -178,7 +198,7 @@ namespace BaobabRidgeWildlifeSystem
             closeButton.Location = new Point(887, 12);
             closeButton.Name = "closeButton";
             closeButton.Size = new Size(100, 40);
-            closeButton.TabIndex = 4;
+            closeButton.TabIndex = 5;
             closeButton.Text = "Close";
             closeButton.UseVisualStyleBackColor = false;
             closeButton.Click += CloseButton_Click;

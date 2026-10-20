@@ -12,6 +12,7 @@
         public string Status { get { return AnimalClassifier.Classify(RecoveryScore).Status; } }
         public string HousingUnit { get { return AnimalClassifier.Classify(RecoveryScore).HousingUnit; } }
 
+        // makes a new animal
         public Animal(string id, string name, string species, int age, int recoveryScore)
         {
             Id = id;
@@ -21,12 +22,13 @@
             RecoveryScore = recoveryScore;
         }
 
-        // boundaries live in AnimalClassifier
+        // gets the status (boundaries live in AnimalClassifier)
         public string GetStatus()
         {
             return AnimalClassifier.Classify(RecoveryScore).Status;
         }
 
+        // gets the housing unit for the recovery score
         public string GetHousingUnit()
         {
             return AnimalClassifier.Classify(RecoveryScore).HousingUnit;

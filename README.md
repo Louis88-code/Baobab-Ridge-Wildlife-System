@@ -1,84 +1,138 @@
 # Baobab Ridge Wildlife Rehabilitation Records System
 
-## Project
-PRG2782 - Programming Project
+> **Course:** PRG2782 – Programming Project  
+> **Platform:** C# Windows Forms Desktop Application (.NET 10, Windows)
 
-## project overview
-The Baobab Ridge Wildlife Rehabilitation Records System is a C# Windows Forms desktop application designed to help a fictional wildlife rehabilitation centre maintain records of animals receiving care. The system records animal details, calculates recovery status and housing unit from the recovery score, and generates a summary report for the centre manager.
+---
+
+## Project Overview
+
+The **Baobab Ridge Wildlife Rehabilitation Records System** is a C# Windows Forms desktop application designed for a wildlife rehabilitation centre to track and manage animals under care. The system logs animal details, automatically computes recovery status and housing assignments based on recovery scores, and generates a summary report for administration.
+
+---
 
 ## Technologies
-- C#
-- Windows Forms
-- .NET 8.0 or newer
-- Git and GitHub
-- Text-file storage
 
-## Group Member
-Louis Glaeser Coetzee - 603309
-Masego Boikanyo Moima - 604834
-Marinus du Randt - 604045
-Gosiame Gonqga - 603062
-Thakgatso Seroka - 601855
+- **Language:** C#
+- **UI Framework:** Windows Forms (WinForms)
+- **Target Framework:** .NET 10 (`net10.0-windows`)
+- **Storage:** Text-file storage (`.txt`)
+- **Version Control:** Git & GitHub
+
+---
+
+## Group Members
+
+| Student Name | Student ID |
+| :--- | :--- |
+| Louis Glaeser Coetzee | 603309 |
+| Masego Boikanyo Moima | 604834 |
+| Marinus du Randt | 604045 |
+| Gosiame Gonqga | 603062 |
+| Thakgatso Seroka | 601855 |
+
+---
+
+## How to Build and Run
+
+The program only runs on **Windows** because it uses Windows Forms.
+
+**Option 1 – Visual Studio**
+1. Install Visual Studio with the ".NET desktop development" workload and the .NET 10 SDK.
+2. Open `BaobabRidgeWildlifeSystem.slnx`.
+3. Press **F5** (or click Start) to build and run.
+
+**Option 2 – Command line**
+1. Install the .NET 10 SDK.
+2. Open a terminal in the solution folder and run:
+   ```text
+   dotnet build
+   dotnet run --project BaobabRidgeWildlifeSystem
+   ```
+
+When the program starts, the **View Animals** screen opens and loads `animals.txt` automatically. The other screens (Add, Update, Summary Report) are opened with the buttons at the top of that screen.
+
+---
 
 ## Features
-- Add animals: The user can enter the animal's ID, name, species, age, and recovery score. This is validated by the system and the status of the animal and its housing unit is determined
-  
-- View animals: Valid records are loaded from animals.txt and displayed using a read-only DataGridView control.
-  
-- Update animals: Enables users to select records by clicking on them from the grid or searching for their IDs. The users can change the permissible data, and the system will recompute status and accommodation.
-  
-- Delete animals: Enables the user to choose an animal and delete it after verification of the process.
 
-- Generate summary reports: Calculates total number of animals, the average age of animals, the average score for recovery, and the number of animals in each status. These are displayed in the application interface and stored in summary.txt.
+- **View Animals:** Loads the records from `animals.txt` and shows them in a read-only grid with the columns Animal ID, Name, Species, Age, Recovery Score, Status and Housing Unit.
+- **Add Animals:** Validates and saves a new animal (ID, name, species, age, recovery score). Status and housing unit are worked out automatically from the recovery score.
+- **Update Animals:** Find an animal by typing its ID in the search box (not case sensitive) or by clicking a row in the grid. The ID cannot be changed while editing. Status and housing unit are recalculated when the recovery score changes.
+- **Delete Animals:** Removes the selected animal after a confirmation message ("Delete WR-0007 (Naledi)? This cannot be undone.").
+- **Summary Report:** Click **Generate Summary** to calculate the total number of animals, the average age, the average recovery score and the number of animals in each of the 5 statuses. The results are shown on screen and saved to `summary.txt`.
+- **Error handling:** Unexpected errors are shown in a message box and written to `errors.log`.
 
-## Data file formats 
-animals.txt:
-- File contains single-line records for each animal.
-- There are seven fields in a line separated by the pipe symbol (|) and in the following order:
-  Animal ID | Name | Species | Age | Recovery Score | Status | Holding Unit
-- Text file is encoded in the UTF-8 format and does not contain any header line.
-- There should be no less than eight valid entries as starters with at least four different statuses.
-- This file should be copied into the output directory alongside the executable program.
+### Status and housing rules
 
-summary.txt:
-- Generated upon the generation of the summary report.
-- Includes the report header, the timestamp of generation, total number of animals, average age, average recovery score, and the total counts of all five categories.
-- This file gets overwritten every time a summary report is generated.
-- Averages should be accurate to two decimal points using a full stop as the decimal point character.
-- In cases where there are no animals, the total and counts are zeroes, and the averages show N/A.
+| Recovery Score | Status | Housing Unit |
+| :--- | :--- | :--- |
+| 0 – 19 | Critical | Intensive Care Unit |
+| 20 – 39 | Serious | High-Dependency Ward |
+| 40 – 59 | Stable | Recovery Ward |
+| 60 – 79 | Recovering | Outdoor Enclosure |
+| 80 – 100 | Release-Ready | Pre-Release Camp |
 
-## Validation rules 
-- Animal ID is mandatory, should be in the format WR- followed by exactly 4 digits, and should be unique. Animal ID is converted to upper case for validation and saving.
-- Animal ID cannot be changed once the record is saved.
-- Name and Species are mandatory and should have at least one but no more than 30 characters.
-- Name and Species cannot contain the pipe | symbol.
-- Age should be an integer between 0 and 100 inclusive.
-- Recovery Score should be an integer between 0 and 100 inclusive.
-- The input text is trimmed of leading and trailing whitespaces for validation.
+### Validation rules
 
-## Build and Run
-1. Download Visual Studio using the .NET desktop development workload and a suitable .NET 8.0+ SDK.
-2. Checkout the team’s GitHub repository onto a brand new, empty folder.
-3. Load up the solution (.sln) or project (.csproj) on Visual Studio.
-4. Restore/build the project.
-5. Make sure that the animals.txt file is part of the project and it will be copied to the output directory (Copy if newer).
-6. Execute the project using Visual Studio.
-7. Verify that animals.txt file exists beside the application, which is currently executing. The application is expected to create an empty one if there is no animals.txt present.
+- **Animal ID:** `WR-` followed by 4 digits (e.g. `WR-0001`). Saved in capital letters and must be unique.
+- **Name and Species:** required, 1–30 characters, cannot contain `|`.
+- **Age:** whole number from 0 to 100.
+- **Recovery Score:** whole number from 0 to 100.
 
-## Error handling
-Errors in file handling, such as non-existent files and folders, files in use by other applications and problems related to permissions have to be handled. There should be no stack trace but only friendly messages and the application has to keep working. Malformed lines in animal records during file loading have to be ignored. The user must be informed about that number of lines.
+---
 
-## Git and Github workflow
-Initialize Git before writing the application.
-- Keep main as the stable branch and make sure that it compiles.
-- Write Add, View, Update, Delete, and Summary functionalities using feature branches.
-- Merge feature branches into main using GitHub pull requests.
-- Make at least 15 commits altogether.
-- Every team member should make at least three commits using their own Git identity on at least three different days.
-- Every team member should have at least one merged pull request.
-- Commit your work regularly and make sure that the GitHub main branch matches the submitted version.
-- Do not commit bin/, obj/, .vs/ and other automatically generated files such as summary.txt.
-- Make sure that the repository is public or that the lecturer is a collaborator.
+## Data Files
 
-## Project integrity 
-The code and documentation must be done by the group itself. Each one must know the system well enough to explain his/her part of the work.
+### `animals.txt`
+One animal per line, with 7 values separated by the pipe character (`|`):
+
+```text
+Animal ID|Name|Species|Age|Recovery Score|Status|Housing Unit
+WR-0001|Naledi|Vervet Monkey|5|70|Recovering|Outdoor Enclosure
+```
+
+- The file is kept in the project folder and a copy is placed next to the program when it is built.
+- When the program loads the file, any line that is not valid (wrong number of values, bad ID, age not 0–100, score not 0–100) is **skipped**, and one message shows how many lines were skipped.
+- If the file is missing, an empty one is created. An empty file simply shows an empty grid.
+- Status and Housing Unit are always recalculated from the Recovery Score, so the program does not depend on what was typed in those two columns.
+
+### `summary.txt`
+A plain text report created by the **Generate Summary** button. It is saved in the same folder as `animals.txt` and is overwritten every time the button is clicked. It contains:
+
+```text
+BAOBAB RIDGE WILDLIFE REHABILITATION CENTRE
+ANIMAL SUMMARY REPORT
+Generated: 2026-10-20 18:30
+----------------------------------------
+Total animals:            10
+Average age (years):      6.80
+Average recovery score:   52.10
+----------------------------------------
+Animals per status:
+  Critical:               2
+  Serious:                2
+  Stable:                 1
+  Recovering:             3
+  Release-Ready:          2
+```
+
+- Averages have 2 decimals and use a full stop.
+- If there are no animals, both averages show `N/A`.
+- All 5 statuses are always listed, even when the count is 0.
+
+### `errors.log`
+Created next to the program when an error happens. It is not part of the repository.
+
+---
+
+## Known Limitations
+
+- Windows only (Windows Forms).
+- Data is stored in a plain text file, so there is no protection if two people use the program at the same time.
+- The **ID** of an animal cannot be changed. To fix a wrong ID, delete the animal and add it again.
+- Invalid lines in `animals.txt` are skipped (not fixed) and are not shown, only counted. They stay in the file until someone corrects them by hand.
+- Delete uses the animal selected in the View Animals grid; there is no undo.
+- Name and Species are limited to 30 characters and cannot contain `|`.
+- Row selection in the Update screen is loaded when a row is clicked with the mouse; using only the arrow keys needs the **Update Animal** button.
+- There are no automated tests; the program was tested by hand.

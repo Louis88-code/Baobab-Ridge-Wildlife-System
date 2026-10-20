@@ -77,7 +77,6 @@
             lblAnimalId.Size = new Size(61, 15);
             lblAnimalId.TabIndex = 0;
             lblAnimalId.Text = "Animal ID";
-            lblAnimalId.Click += lblAnimalId_Click;
             // 
             // txtAnimalId
             // 
