@@ -1,4 +1,4 @@
-namespace BaobabRidgeWildlifeSystem.Models
+namespace BaobabRidgeWildlifeSystem
 {
     public sealed class AnimalRecord
     {
