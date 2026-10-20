@@ -7,7 +7,6 @@ namespace BaobabRidgeWildlifeSystem
         public ViewAnimals()
         {
             InitializeComponent();
-            StyleAnimalGrid();
             Shown += Form1_Shown;
         }
 
@@ -15,18 +14,6 @@ namespace BaobabRidgeWildlifeSystem
         {
             // Load records automatically when the form opens.
             LoadAnimals();
-        }
-
-        private void StyleAnimalGrid()
-        {
-            animalsGrid.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(39, 78, 59);
-            animalsGrid.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            animalsGrid.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            animalsGrid.DefaultCellStyle.Font = new Font("Segoe UI", 9F);
-            animalsGrid.DefaultCellStyle.ForeColor = Color.FromArgb(42, 52, 44);
-            animalsGrid.DefaultCellStyle.SelectionBackColor = Color.FromArgb(220, 233, 218);
-            animalsGrid.DefaultCellStyle.SelectionForeColor = Color.FromArgb(35, 55, 39);
-            animalsGrid.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 247);
         }
 
         private void LoadButton_Click(object? sender, EventArgs e) => LoadAnimals();
@@ -45,13 +32,13 @@ namespace BaobabRidgeWildlifeSystem
                 statusLabel.Text = $"Loaded successfully from {fileService.FilePath}";
 
                 // Use readable column headings in the table.
-                SetHeader("RecordId", "Record ID");
+                SetHeader("RecordId", "Animal ID");
                 SetHeader("Name", "Animal Name");
                 SetHeader("Species", "Species");
                 SetHeader("Age", "Age (years)");
-                SetHeader("Weight", "Weight (kg)");
-                SetHeader("HealthStatus", "Health Status");
-                SetHeader("Location", "Current Location");
+                SetHeader("RecoveryScore", "Recovery Score (0-100)");
+                SetHeader("Status", "Status");
+                SetHeader("HousingUnit", "Housing Unit");
             }
             catch (Exception ex) when (
                 ex is IOException ||
@@ -73,65 +60,69 @@ namespace BaobabRidgeWildlifeSystem
 
         private void SetHeader(string propertyName, string headerText)
         {
-            if (animalsGrid.Columns.Contains(propertyName))
-                animalsGrid.Columns[propertyName].HeaderText = headerText;
+            if (animalsGrid.Columns.Contains(propertyName)) animalsGrid.Columns[propertyName].HeaderText = headerText;
         }
 
-        // These buttons are present in the form for a consistent workflow.
-        // Add, Update and Delete are separate project options and are not implemented here.
+        // opens the Add Animal form, then refreshes the grid when it closes
         private void AddButton_Click(object? sender, EventArgs e)
         {
-            ShowFeatureNotice("Add Animal", "Animal creation belongs to Option 1 and is not connected in this Option 2 build.");
+            using (var addForm = new AddAnimal())
+            {
+                addForm.ShowDialog(this);
+            }
+
+            LoadAnimals();
         }
 
+        // opens the Update Animal form, then refreshes the grid when it closes
         private void UpdateButton_Click(object? sender, EventArgs e)
         {
-            ShowFeatureNotice("Update Animal", "Animal updates are handled by the Update Animal feature, not Option 2.");
+            using (var updateForm = new UpdateAnimal())
+            {
+                updateForm.ShowDialog(this);
+            }
+
+            LoadAnimals();
         }
 
         private void DeleteButton_Click(object? sender, EventArgs e)
         {
             if (animalsGrid.CurrentRow == null)
-    {
-        MessageBox.Show("Please select an animal to delete.");
-        return;
-    }
+            {
+                MessageBox.Show("Please select an animal to delete.");
+                return;
+            }
 
-    string recordId = animalsGrid.CurrentRow
-        .Cells["RecordId"].Value?.ToString() ?? "";
+            string recordId = animalsGrid.CurrentRow
+                .Cells["RecordId"].Value?.ToString() ?? "";
 
-    DialogResult answer = MessageBox.Show(
-        $"Are you sure you want to delete animal {recordId}?",
-        "Confirm Deletion",
-        MessageBoxButtons.YesNo,
-        MessageBoxIcon.Warning);
+            DialogResult answer = MessageBox.Show(
+                $"Are you sure you want to delete animal {recordId}?",
+                "Confirm Deletion",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
 
-    if (answer != DialogResult.Yes)
-        return;
+            if (answer != DialogResult.Yes)
+                return;
 
-    try
-    {
-        var fileService = new AnimalFileService();
+            try
+            {
+                var fileService = new AnimalFileService();
 
-        if (fileService.DeleteAnimal(recordId))
-        {
-            MessageBox.Show("Animal deleted successfully!");
-            LoadAnimals();
-        }
-        else
-        {
-            MessageBox.Show("Animal not found in the file.");
-        }
-    }
-    catch (IOException ex)
-    {
-        MessageBox.Show($"Could not delete animal: {ex.Message}");
-    }
-        }
-
-        private static void ShowFeatureNotice(string title, string message)
-        {
-            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (fileService.DeleteAnimal(recordId))
+                {
+                    MessageBox.Show("Animal deleted successfully!");
+                    LoadAnimals();
+                }
+                else
+                {
+                    MessageBox.Show("Animal not found in the file.");
+                }
+            }
+            catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
+            {
+                MessageBox.Show($"Could not delete animal: {ex.Message}");
+            }
         }
 
         private void CloseButton_Click(object? sender, EventArgs e) => Close();
