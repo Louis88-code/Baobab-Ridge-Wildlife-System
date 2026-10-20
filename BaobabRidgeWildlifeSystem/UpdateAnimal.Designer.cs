@@ -41,6 +41,10 @@
             txtID = new TextBox();
             lblAnimalID = new Label();
             pnlRight = new Panel();
+            pnlSearch = new Panel();
+            lblSearch = new Label();
+            txtSearch = new TextBox();
+            btnSearch = new Button();
             DGV1 = new DataGridView();
             pnlButtons = new Panel();
             buttonbtnClear3 = new Button();
@@ -50,6 +54,7 @@
             pnlHeader.SuspendLayout();
             pnlLeft.SuspendLayout();
             pnlRight.SuspendLayout();
+            pnlSearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)DGV1).BeginInit();
             pnlButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvAnimals).BeginInit();
@@ -233,7 +238,7 @@
             lblAnimalName.Name = "lblAnimalName";
             lblAnimalName.Size = new Size(81, 15);
             lblAnimalName.TabIndex = 2;
-            lblAnimalName.Text = "Animal Name";
+            lblAnimalName.Text = "Name";
             // 
             // txtID
             // 
@@ -260,6 +265,7 @@
             pnlRight.BackColor = Color.FromArgb(244, 246, 241);
             pnlRight.Controls.Add(DGV1);
             pnlRight.Controls.Add(pnlButtons);
+            pnlRight.Controls.Add(pnlSearch);
             pnlRight.Dock = DockStyle.Fill;
             pnlRight.Location = new Point(340, 84);
             pnlRight.Name = "pnlRight";
@@ -311,7 +317,56 @@
             DGV1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             DGV1.Size = new Size(740, 484);
             DGV1.TabIndex = 0;
-            DGV1.CellContentClick += dataGridView1_CellContentClick;
+            DGV1.CellClick += DGV1_CellClick;
+            // 
+            // pnlSearch
+            // 
+            pnlSearch.BackColor = Color.FromArgb(244, 246, 241);
+            pnlSearch.Controls.Add(btnSearch);
+            pnlSearch.Controls.Add(txtSearch);
+            pnlSearch.Controls.Add(lblSearch);
+            pnlSearch.Dock = DockStyle.Top;
+            pnlSearch.Location = new Point(20, 20);
+            pnlSearch.Name = "pnlSearch";
+            pnlSearch.Size = new Size(740, 50);
+            pnlSearch.TabIndex = 2;
+            // 
+            // lblSearch
+            // 
+            lblSearch.AutoSize = true;
+            lblSearch.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblSearch.ForeColor = Color.FromArgb(45, 65, 50);
+            lblSearch.Location = new Point(0, 16);
+            lblSearch.Name = "lblSearch";
+            lblSearch.Size = new Size(76, 15);
+            lblSearch.TabIndex = 0;
+            lblSearch.Text = "Search by ID";
+            // 
+            // txtSearch
+            // 
+            txtSearch.BorderStyle = BorderStyle.FixedSingle;
+            txtSearch.Font = new Font("Segoe UI", 10F);
+            txtSearch.Location = new Point(92, 11);
+            txtSearch.Name = "txtSearch";
+            txtSearch.Size = new Size(200, 25);
+            txtSearch.TabIndex = 1;
+            // 
+            // btnSearch
+            // 
+            btnSearch.BackColor = Color.White;
+            btnSearch.Cursor = Cursors.Hand;
+            btnSearch.FlatAppearance.BorderColor = Color.FromArgb(190, 200, 190);
+            btnSearch.FlatAppearance.MouseOverBackColor = Color.FromArgb(236, 241, 234);
+            btnSearch.FlatStyle = FlatStyle.Flat;
+            btnSearch.Font = new Font("Segoe UI", 10F);
+            btnSearch.ForeColor = Color.FromArgb(45, 65, 50);
+            btnSearch.Location = new Point(304, 8);
+            btnSearch.Name = "btnSearch";
+            btnSearch.Size = new Size(100, 32);
+            btnSearch.TabIndex = 2;
+            btnSearch.Text = "Search";
+            btnSearch.UseVisualStyleBackColor = false;
+            btnSearch.Click += SearchButton_Click;
             // 
             // pnlButtons
             // 
@@ -431,6 +486,8 @@
             pnlLeft.ResumeLayout(false);
             pnlLeft.PerformLayout();
             pnlRight.ResumeLayout(false);
+            pnlSearch.ResumeLayout(false);
+            pnlSearch.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)DGV1).EndInit();
             pnlButtons.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvAnimals).EndInit();
@@ -442,6 +499,10 @@
         private Panel pnlLeft;
         private Panel pnlRight;
         private Panel pnlButtons;
+        private Panel pnlSearch;
+        private Label lblSearch;
+        private TextBox txtSearch;
+        private Button btnSearch;
         private Label lblHeaderSub;
         private Label lblSubtitle;
         private Label lblAnimalID;

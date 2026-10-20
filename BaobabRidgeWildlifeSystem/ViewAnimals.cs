@@ -4,12 +4,14 @@ namespace BaobabRidgeWildlifeSystem
 {
     public partial class ViewAnimals : Form
     {
+        // sets up the form
         public ViewAnimals()
         {
             InitializeComponent();
             Shown += Form1_Shown;
         }
 
+        // loads the records when the form opens
         private void Form1_Shown(object? sender, EventArgs e)
         {
             try
@@ -23,6 +25,7 @@ namespace BaobabRidgeWildlifeSystem
             }
         }
 
+        // load / refresh button
         private void LoadButton_Click(object? sender, EventArgs e)
         {
             try
@@ -35,6 +38,7 @@ namespace BaobabRidgeWildlifeSystem
             }
         }
 
+        // reads the file and shows the animals in the grid
         private void LoadAnimals()
         {
             loadButton.Enabled = false;
@@ -43,19 +47,25 @@ namespace BaobabRidgeWildlifeSystem
             try
             {
                 var fileService = new AnimalFileService();
-                List<AnimalRecord> animals = fileService.LoadAnimals();
-                animalsGrid.DataSource = new BindingList<AnimalRecord>(animals);
+                List<Animal> animals = fileService.LoadAnimals();
+                animalsGrid.DataSource = new BindingList<Animal>(animals);
                 countLabel.Text = $"{animals.Count} animal record(s)";
                 statusLabel.Text = $"Loaded successfully from {fileService.FilePath}";
 
                 // Use readable column headings in the table.
-                SetHeader("RecordId", "Animal ID");
-                SetHeader("Name", "Animal Name");
+                SetHeader("Id", "Animal ID");
+                SetHeader("Name", "Name");
                 SetHeader("Species", "Species");
-                SetHeader("Age", "Age (years)");
-                SetHeader("RecoveryScore", "Recovery Score (0-100)");
+                SetHeader("Age", "Age");
+                SetHeader("RecoveryScore", "Recovery Score");
                 SetHeader("Status", "Status");
                 SetHeader("HousingUnit", "Housing Unit");
+
+                // one message for all the lines that were skipped
+                if (fileService.SkippedLines > 0)
+                {
+                    MessageBox.Show($"{fileService.SkippedLines} line(s) in animals.txt were not valid and were skipped.", "Some Lines Skipped", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
             catch (Exception ex)
             {
@@ -70,6 +80,7 @@ namespace BaobabRidgeWildlifeSystem
             }
         }
 
+        // changes the heading text of one column
         private void SetHeader(string propertyName, string headerText)
         {
             try
@@ -118,6 +129,7 @@ namespace BaobabRidgeWildlifeSystem
             }
         }
 
+        // deletes the selected animal after asking first
         private void DeleteButton_Click(object? sender, EventArgs e)
         {
             try
@@ -129,10 +141,12 @@ namespace BaobabRidgeWildlifeSystem
                 }
 
                 string recordId = animalsGrid.CurrentRow
-                    .Cells["RecordId"].Value?.ToString() ?? "";
+                    .Cells["Id"].Value?.ToString() ?? "";
+                string animalName = animalsGrid.CurrentRow
+                    .Cells["Name"].Value?.ToString() ?? "";
 
                 DialogResult answer = MessageBox.Show(
-                    $"Are you sure you want to delete animal {recordId}?",
+                    $"Delete {recordId} ({animalName})? This cannot be undone.",
                     "Confirm Deletion",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning);
@@ -158,6 +172,23 @@ namespace BaobabRidgeWildlifeSystem
             }
         }
 
+        // opens the Summary Report form
+        private void SummaryButton_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                using (var summaryForm = new SummaryForm())
+                {
+                    summaryForm.ShowDialog(this);
+                }
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, "Could not open the Summary Report screen.");
+            }
+        }
+
+        // close button
         private void CloseButton_Click(object? sender, EventArgs e)
         {
             try

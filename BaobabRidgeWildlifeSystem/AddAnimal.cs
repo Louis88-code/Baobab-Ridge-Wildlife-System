@@ -1,12 +1,11 @@
-using System.Text.RegularExpressions;
-
 namespace BaobabRidgeWildlifeSystem
 {
     public partial class AddAnimal : Form
     {
         // where the animals get saved
-        private string filePath = Path.Combine(Application.StartupPath, "animals.txt");
+        private string filePath = new AnimalFileService().FilePath;
 
+        // sets up the form
         public AddAnimal()
         {
             try
@@ -19,12 +18,7 @@ namespace BaobabRidgeWildlifeSystem
             }
         }
 
-        private void lblAnimalId_Click(object sender, EventArgs e)
-        {
-            // designer
-        }
-
-        // add button
+        // add button: checks the boxes, then saves the animal to the file
         private void btnAdd_Click(object sender, EventArgs e)
         {
             try
@@ -56,9 +50,6 @@ namespace BaobabRidgeWildlifeSystem
                 MessageBox.Show($"Animal {animal.Id} added successfully!\n\n" + $"Status: {animal.GetStatus()}\n" + $"Housing Unit: {animal.GetHousingUnit()}", "Animal Added", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 ClearBoxes();
-                // ========================================NB====================================================
-                // member 2 grid refresh method
-                // ========================================NB====================================================
             }
             catch (Exception ex)
             {
@@ -66,13 +57,14 @@ namespace BaobabRidgeWildlifeSystem
             }
         }
 
-        // checks all the boxes
+        // checks all the boxes (the rules are in AnimalValidator)
         private bool CheckInputs(string id, string name, string species, string ageText, string scoreText)
         {
             // id should look like WR-1234
-            if (!Regex.IsMatch(id, @"^WR-[0-9]{4}$"))
+            string error = AnimalValidator.CheckId(id);
+            if (error != "")
             {
-                ShowError("Animal ID must be 'WR-' followed by 4 digits (e.g. WR-1001).", txtAnimalId);
+                ShowError(error, txtAnimalId);
                 return false;
             }
 
@@ -84,30 +76,34 @@ namespace BaobabRidgeWildlifeSystem
             }
 
             // name
-            if (name.Length < 1 || name.Length > 30 || name.Contains("|"))
+            error = AnimalValidator.CheckName(name);
+            if (error != "")
             {
-                ShowError("Name is required (1-30 characters) and cannot contain '|'.", txtName);
+                ShowError(error, txtName);
                 return false;
             }
 
             // species
-            if (species.Length < 1 || species.Length > 30 || species.Contains("|"))
+            error = AnimalValidator.CheckSpecies(species);
+            if (error != "")
             {
-                ShowError("Species is required (1-30 characters) and cannot contain '|'.", txtSpecies);
+                ShowError(error, txtSpecies);
                 return false;
             }
 
             // age
-            if (!int.TryParse(ageText, out int age) || age < 0 || age > 100)
+            error = AnimalValidator.CheckAge(ageText);
+            if (error != "")
             {
-                ShowError("Age must be a whole number between 0 and 100.", txtAge);
+                ShowError(error, txtAge);
                 return false;
             }
 
             // recovery score
-            if (!int.TryParse(scoreText, out int score) || score < 0 || score > 100)
+            error = AnimalValidator.CheckScore(scoreText);
+            if (error != "")
             {
-                ShowError("Recovery Score must be a whole number between 0 and 100.", txtRecoveryScore);
+                ShowError(error, txtRecoveryScore);
                 return false;
             }
 
@@ -159,7 +155,7 @@ namespace BaobabRidgeWildlifeSystem
             }
         }
 
-        // clear boxes
+        // clears the boxes
         private void ClearBoxes()
         {
             try

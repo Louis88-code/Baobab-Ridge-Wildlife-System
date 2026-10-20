@@ -95,6 +95,7 @@ namespace BaobabRidgeWildlifeSystem
             MessageBox.Show(message, title, MessageBoxButtons.OK, icon);
         }
 
+        // writes the exception details to errors.log
         private static void LogException(Exception ex, string context)
         {
             try

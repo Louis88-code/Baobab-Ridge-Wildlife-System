@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace BaobabRidgeWildlifeSystem
 {
@@ -7,86 +8,113 @@ namespace BaobabRidgeWildlifeSystem
         private const int ExpectedFieldCount = 7;
         private readonly string _filePath;
 
+        // finds the file when the service is made
         public AnimalFileService(string fileName = "animals.txt")
         {
             _filePath = FindFile(fileName);
         }
 
+        // where the file is
         public string FilePath => _filePath;
 
-        public List<AnimalRecord> LoadAnimals()
+        // how many bad lines were skipped the last time LoadAnimals ran
+        public int SkippedLines { get; private set; }
+
+        // reads animals.txt, bad lines are skipped and counted instead of crashing
+        public List<Animal> LoadAnimals()
         {
+            SkippedLines = 0;
+            List<Animal> animals = new List<Animal>();
+
+            // no file yet, so make an empty one
             if (!File.Exists(_filePath))
             {
-                throw new FileNotFoundException($"Could not find '{Path.GetFileName(_filePath)}'. Place it in the solution folder or next to the application executable.",_filePath);
+                File.WriteAllText(_filePath, "");
+                return animals;
             }
 
-            var animals = new List<AnimalRecord>();
-            var errors = new List<string>();
             string[] lines = File.ReadAllLines(_filePath);
 
-            for (int index = 0; index < lines.Length; index++)
+            foreach (string rawLine in lines)
             {
-                string line = lines[index].Trim();
+                string line = rawLine.Trim();
 
-                if (string.IsNullOrWhiteSpace(line))
+                // blank lines are not counted as bad lines
+                if (line == "")
                     continue;
 
-                string[] fields = line.Split('|');
+                Animal? animal = ParseLine(line);
 
-                if (fields.Length != ExpectedFieldCount)
-                {
-                    errors.Add($"Line {index + 1}: expected 7 fields separated by '|'.");
-                    continue;
-                }
-
-                for (int i = 0; i < fields.Length; i++)
-                    fields[i] = fields[i].Trim();
-
-                if (fields.Any(string.IsNullOrWhiteSpace))
-                {
-                    errors.Add($"Line {index + 1}: one or more fields are empty.");
-                    continue;
-                }
-
-                if (!int.TryParse(fields[3], NumberStyles.Integer, CultureInfo.InvariantCulture, out int age) || age < 0)
-                {
-                    errors.Add($"Line {index + 1}: Age must be a whole number greater than or equal to 0.");
-                    continue;
-                }
-
-                if (!int.TryParse(fields[4], NumberStyles.Integer, CultureInfo.InvariantCulture, out int recoveryScore) || recoveryScore < 0 || recoveryScore > 100)
-                {
-                    errors.Add($"Line {index + 1}: Recovery Score must be a whole number between 0 and 100.");
-                    continue;
-                }
-
-                animals.Add(new AnimalRecord
-                {
-                    RecordId = fields[0],
-                    Name = fields[1],
-                    Species = fields[2],
-                    Age = age,
-                    RecoveryScore = recoveryScore,
-                    Status = fields[5],
-                    HousingUnit = fields[6]
-                });
-            }
-
-            if (animals.Count == 0 && errors.Count == 0)
-                throw new InvalidDataException("The animals.txt file is empty or contains no animal records.");
-
-            if (errors.Count > 0)
-            {
-                throw new InvalidDataException(
-                    "Some records in animals.txt could not be loaded:\n\n" +
-                    string.Join("\n", errors) +
-                    $"\n\nValid records found: {animals.Count}. Correct the listed lines and try again.");
+                if (animal == null)
+                    SkippedLines++;
+                else
+                    animals.Add(animal);
             }
 
             return animals;
         }
 
+        // turns one line of the file into an Animal, gives back null if the line is bad
+        private static Animal? ParseLine(string line)
+        {
+            string[] fields = line.Split('|');
+
+            if (fields.Length != ExpectedFieldCount)
+                return null;
+
+            for (int i = 0; i < fields.Length; i++)
+                fields[i] = fields[i].Trim();
+
+            if (fields.Any(string.IsNullOrWhiteSpace))
+                return null;
+
+            // id should look like WR-1234
+            if (!Regex.IsMatch(fields[0], @"^WR-[0-9]{4}$"))
+                return null;
+
+            if (!int.TryParse(fields[3], NumberStyles.Integer, CultureInfo.InvariantCulture, out int age) || age < 0 || age > 100)
+                return null;
+
+            if (!int.TryParse(fields[4], NumberStyles.Integer, CultureInfo.InvariantCulture, out int recoveryScore) || recoveryScore < 0 || recoveryScore > 100)
+                return null;
+
+            // status and housing are worked out from the score by the Animal class
+            return new Animal(fields[0], fields[1], fields[2], age, recoveryScore);
+        }
+
+        // replaces the line with the same id by the new details of the animal
+        public bool UpdateAnimal(Animal animal)
+        {
+            if (!File.Exists(_filePath))
+                return false;
+
+            string[] lines = File.ReadAllLines(_filePath);
+            bool animalUpdated = false;
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                int separatorPosition = lines[i].IndexOf('|');
+
+                if (separatorPosition < 0)
+                    continue;
+
+                string currentId = lines[i].Substring(0, separatorPosition).Trim();
+
+                if (currentId.Equals(animal.Id, StringComparison.OrdinalIgnoreCase))
+                {
+                    lines[i] = animal.ToFileString();
+                    animalUpdated = true;
+                    break;
+                }
+            }
+
+            if (animalUpdated)
+                File.WriteAllLines(_filePath, lines);
+
+            return animalUpdated;
+        }
+
+        // deletes the line with this id from the file
         public bool DeleteAnimal(string recordId)
         {
             if (string.IsNullOrWhiteSpace(recordId) || !File.Exists(_filePath))
@@ -120,6 +148,7 @@ namespace BaobabRidgeWildlifeSystem
             return animalDeleted;
         }
 
+        // looks for the file in the exe folder and the folders above it
         private static string FindFile(string fileName)
         {
             string[] startingFolders =

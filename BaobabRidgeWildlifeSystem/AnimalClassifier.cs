@@ -26,10 +26,10 @@ namespace BaobabRidgeWildlifeSystem
             if (recoveryScore < 0 || recoveryScore > 100)
                 throw new ArgumentOutOfRangeException(nameof(recoveryScore),recoveryScore, "Recovery score must be between 0 and 100.");
 
-            if (recoveryScore <= 20) return (StatusCritical, HousingIntensiveCare);
-            if (recoveryScore <= 40) return (StatusSerious, HousingHighDependency);
-            if (recoveryScore <= 60) return (StatusStable, HousingRecoveryWard);
-            if (recoveryScore <= 80) return (StatusRecovering, HousingOutdoor);
+            if (recoveryScore < 20) return (StatusCritical, HousingIntensiveCare);
+            if (recoveryScore < 40) return (StatusSerious, HousingHighDependency);
+            if (recoveryScore < 60) return (StatusStable, HousingRecoveryWard);
+            if (recoveryScore < 80) return (StatusRecovering, HousingOutdoor);
             return (StatusReleaseReady, HousingPreRelease);
         }
     }
