@@ -4,9 +4,9 @@ using BaobabRidgeWildlifeSystem.Services;
 
 namespace BaobabRidgeWildlifeSystem
 {
-    public partial class Form1 : Form
+    public partial class ViewAnimal : Form
     {
-        public Form1()
+        public ViewAnimal()
         {
             InitializeComponent();
             StyleAnimalGrid();
