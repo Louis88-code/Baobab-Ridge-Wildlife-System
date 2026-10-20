@@ -1,6 +1,6 @@
 namespace BaobabRidgeWildlifeSystem
 {
-    partial class Form1
+    partial class ViewTheAnimals
     {
         private System.ComponentModel.IContainer components = null;
         private Panel headerPanel;
