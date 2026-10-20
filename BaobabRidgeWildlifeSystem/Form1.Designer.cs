@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             lblSubtitle = new Label();
-            label1 = new Label();
+            lblAnimalID = new Label();
             txtID = new TextBox();
-            label2 = new Label();
+            lblAnimalName = new Label();
             txtName = new TextBox();
-            label3 = new Label();
+            lblspecies = new Label();
             txtSpecies = new TextBox();
             txtAge = new TextBox();
-            label4 = new Label();
+            lblAge = new Label();
             label5 = new Label();
             txtRecoveryScore = new TextBox();
             btnUpdate = new Button();
@@ -47,9 +47,9 @@
             txtStatus = new TextBox();
             txtHousing = new TextBox();
             dgvAnimals = new DataGridView();
-            dataGridView1 = new DataGridView();
+            DGV1 = new DataGridView();
             ((System.ComponentModel.ISupportInitialize)dgvAnimals).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)DGV1).BeginInit();
             SuspendLayout();
             // 
             // lblSubtitle
@@ -57,24 +57,24 @@
             lblSubtitle.AutoSize = true;
             lblSubtitle.Font = new Font("Segoe UI", 19.8000011F, FontStyle.Bold | FontStyle.Underline, GraphicsUnit.Point, 0);
             lblSubtitle.ForeColor = SystemColors.Control;
-            lblSubtitle.Location = new Point(506, 45);
+            lblSubtitle.Location = new Point(555, 41);
             lblSubtitle.Margin = new Padding(4, 0, 4, 0);
             lblSubtitle.Name = "lblSubtitle";
             lblSubtitle.Size = new Size(377, 46);
             lblSubtitle.TabIndex = 1;
             lblSubtitle.Text = "Update Animal Details";
             // 
-            // label1
+            // lblAnimalID
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold);
-            label1.ForeColor = SystemColors.Control;
-            label1.Location = new Point(25, 142);
-            label1.Margin = new Padding(4, 0, 4, 0);
-            label1.Name = "label1";
-            label1.Size = new Size(96, 25);
-            label1.TabIndex = 2;
-            label1.Text = "AnimalID:";
+            lblAnimalID.AutoSize = true;
+            lblAnimalID.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold);
+            lblAnimalID.ForeColor = SystemColors.Control;
+            lblAnimalID.Location = new Point(25, 142);
+            lblAnimalID.Margin = new Padding(4, 0, 4, 0);
+            lblAnimalID.Name = "lblAnimalID";
+            lblAnimalID.Size = new Size(96, 25);
+            lblAnimalID.TabIndex = 2;
+            lblAnimalID.Text = "AnimalID:";
             // 
             // txtID
             // 
@@ -84,17 +84,17 @@
             txtID.Size = new Size(155, 31);
             txtID.TabIndex = 3;
             // 
-            // label2
+            // lblAnimalName
             // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold);
-            label2.ForeColor = SystemColors.Control;
-            label2.Location = new Point(15, 304);
-            label2.Margin = new Padding(4, 0, 4, 0);
-            label2.Name = "label2";
-            label2.Size = new Size(132, 25);
-            label2.TabIndex = 4;
-            label2.Text = "Animal Name:";
+            lblAnimalName.AutoSize = true;
+            lblAnimalName.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold);
+            lblAnimalName.ForeColor = SystemColors.Control;
+            lblAnimalName.Location = new Point(15, 304);
+            lblAnimalName.Margin = new Padding(4, 0, 4, 0);
+            lblAnimalName.Name = "lblAnimalName";
+            lblAnimalName.Size = new Size(132, 25);
+            lblAnimalName.TabIndex = 4;
+            lblAnimalName.Text = "Animal Name:";
             // 
             // txtName
             // 
@@ -104,17 +104,17 @@
             txtName.Size = new Size(178, 31);
             txtName.TabIndex = 5;
             // 
-            // label3
+            // lblspecies
             // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold);
-            label3.ForeColor = SystemColors.Control;
-            label3.Location = new Point(15, 382);
-            label3.Margin = new Padding(4, 0, 4, 0);
-            label3.Name = "label3";
-            label3.Size = new Size(80, 25);
-            label3.TabIndex = 6;
-            label3.Text = "Species:";
+            lblspecies.AutoSize = true;
+            lblspecies.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold);
+            lblspecies.ForeColor = SystemColors.Control;
+            lblspecies.Location = new Point(15, 382);
+            lblspecies.Margin = new Padding(4, 0, 4, 0);
+            lblspecies.Name = "lblspecies";
+            lblspecies.Size = new Size(80, 25);
+            lblspecies.TabIndex = 6;
+            lblspecies.Text = "Species:";
             // 
             // txtSpecies
             // 
@@ -132,17 +132,17 @@
             txtAge.Size = new Size(155, 31);
             txtAge.TabIndex = 8;
             // 
-            // label4
+            // lblAge
             // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold);
-            label4.ForeColor = SystemColors.Control;
-            label4.Location = new Point(25, 215);
-            label4.Margin = new Padding(4, 0, 4, 0);
-            label4.Name = "label4";
-            label4.Size = new Size(56, 25);
-            label4.TabIndex = 9;
-            label4.Text = "Age: ";
+            lblAge.AutoSize = true;
+            lblAge.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold);
+            lblAge.ForeColor = SystemColors.Control;
+            lblAge.Location = new Point(25, 215);
+            lblAge.Margin = new Padding(4, 0, 4, 0);
+            lblAge.Name = "lblAge";
+            lblAge.Size = new Size(56, 25);
+            lblAge.TabIndex = 9;
+            lblAge.Text = "Age: ";
             // 
             // label5
             // 
@@ -167,36 +167,39 @@
             // btnUpdate
             // 
             btnUpdate.Font = new Font("Microsoft Sans Serif", 12F);
-            btnUpdate.Location = new Point(1157, 292);
+            btnUpdate.Location = new Point(1213, 292);
             btnUpdate.Margin = new Padding(4);
             btnUpdate.Name = "btnUpdate";
             btnUpdate.Size = new Size(158, 48);
             btnUpdate.TabIndex = 12;
             btnUpdate.Text = "Update Animal";
             btnUpdate.UseVisualStyleBackColor = true;
+            btnUpdate.Click += UpdateButton_Click;
             // 
             // btnSaveChanges
             // 
             btnSaveChanges.Enabled = false;
             btnSaveChanges.Font = new Font("Microsoft Sans Serif", 12F);
-            btnSaveChanges.Location = new Point(1157, 370);
+            btnSaveChanges.Location = new Point(1213, 370);
             btnSaveChanges.Margin = new Padding(4);
             btnSaveChanges.Name = "btnSaveChanges";
             btnSaveChanges.Size = new Size(158, 48);
             btnSaveChanges.TabIndex = 13;
             btnSaveChanges.Text = "Save Changes";
             btnSaveChanges.UseVisualStyleBackColor = true;
+            btnSaveChanges.Click += SaveChangesButton_Click;
             // 
             // buttonbtnClear3
             // 
             buttonbtnClear3.Font = new Font("Microsoft Sans Serif", 12F);
-            buttonbtnClear3.Location = new Point(1157, 440);
+            buttonbtnClear3.Location = new Point(1213, 451);
             buttonbtnClear3.Margin = new Padding(4);
             buttonbtnClear3.Name = "buttonbtnClear3";
             buttonbtnClear3.Size = new Size(145, 45);
             buttonbtnClear3.TabIndex = 14;
             buttonbtnClear3.Text = "Clear";
             buttonbtnClear3.UseVisualStyleBackColor = true;
+            buttonbtnClear3.Click += ClearButton_Click;
             // 
             // label6
             // 
@@ -255,16 +258,18 @@
             dgvAnimals.Size = new Size(618, 525);
             dgvAnimals.TabIndex = 19;
             // 
-            // dataGridView1
+            // DGV1
             // 
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(402, 139);
-            dataGridView1.Margin = new Padding(4);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(708, 525);
-            dataGridView1.TabIndex = 20;
-            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
+            DGV1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            DGV1.Location = new Point(392, 142);
+            DGV1.Margin = new Padding(4);
+            DGV1.MultiSelect = false;
+            DGV1.Name = "DGV1";
+            DGV1.RowHeadersWidth = 51;
+            DGV1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            DGV1.Size = new Size(796, 525);
+            DGV1.TabIndex = 20;
+            DGV1.CellContentClick += dataGridView1_CellContentClick;
             // 
             // Form1
             // 
@@ -272,7 +277,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.DarkGreen;
             ClientSize = new Size(1409, 744);
-            Controls.Add(dataGridView1);
+            Controls.Add(DGV1);
             Controls.Add(dgvAnimals);
             Controls.Add(txtHousing);
             Controls.Add(txtStatus);
@@ -283,14 +288,14 @@
             Controls.Add(btnUpdate);
             Controls.Add(txtRecoveryScore);
             Controls.Add(label5);
-            Controls.Add(label4);
+            Controls.Add(lblAge);
             Controls.Add(txtAge);
             Controls.Add(txtSpecies);
-            Controls.Add(label3);
+            Controls.Add(lblspecies);
             Controls.Add(txtName);
-            Controls.Add(label2);
+            Controls.Add(lblAnimalName);
             Controls.Add(txtID);
-            Controls.Add(label1);
+            Controls.Add(lblAnimalID);
             Controls.Add(lblSubtitle);
             Font = new Font("Segoe UI", 10.8F);
             Margin = new Padding(4);
@@ -298,21 +303,21 @@
             Text = "Form1";
             Load += Form1_Load;
             ((System.ComponentModel.ISupportInitialize)dgvAnimals).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)DGV1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
         private Label lblSubtitle;
-        private Label label1;
+        private Label lblAnimalID;
         private TextBox txtID;
-        private Label label2;
+        private Label lblAnimalName;
         private TextBox txtName;
-        private Label label3;
+        private Label lblspecies;
         private TextBox txtSpecies;
         private TextBox txtAge;
-        private Label label4;
+        private Label lblAge;
         private Label label5;
         private TextBox txtRecoveryScore;
         private Button btnUpdate;
@@ -323,6 +328,6 @@
         private TextBox txtStatus;
         private TextBox txtHousing;
         private DataGridView dgvAnimals;
-        private DataGridView dataGridView1;
+        private DataGridView DGV1;
     }
 }
