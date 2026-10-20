@@ -12,7 +12,7 @@ namespace BaobabRidgeWildlifeSystem
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             Application.Run(new UpdateAnimal());
-            Application.Run(new ViewTheAnimals());
+            Application.Run(new ViewAnimals());
         }
     }
 }

@@ -2,9 +2,9 @@ using System.ComponentModel;
 
 namespace BaobabRidgeWildlifeSystem
 {
-    public partial class ViewTheAnimals : Form
+    public partial class ViewAnimals : Form
     {
-        public ViewTheAnimals()
+        public ViewAnimals()
         {
             InitializeComponent();
             StyleAnimalGrid();
