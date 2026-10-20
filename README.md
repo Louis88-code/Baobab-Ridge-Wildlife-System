@@ -32,3 +32,6 @@ Open the solution in Visual Studio, build the project, and run it.
 
 ## Known Limitations
 To be completed after testing.
+
+## Error Handling
+All exceptions are sent to the `ExceptionHandler` class (`ExceptionHandler.cs`). It shows the user a friendly message and logs the full details to `errors.log` next to the executable.

@@ -9,7 +9,14 @@ namespace BaobabRidgeWildlifeSystem
 
         public AddAnimal()
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, "The Add Animal screen could not be created.");
+            }
         }
 
         private void lblAnimalId_Click(object sender, EventArgs e)
@@ -20,16 +27,16 @@ namespace BaobabRidgeWildlifeSystem
         // add button
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            string id = txtAnimalId.Text.Trim().ToUpper();
-            string name = txtName.Text.Trim();
-            string species = txtSpecies.Text.Trim();
-            string ageText = txtAge.Text.Trim();
-            string scoreText = txtRecoveryScore.Text.Trim();
-
-            txtAnimalId.Text = id;
-
             try
             {
+                string id = txtAnimalId.Text.Trim().ToUpper();
+                string name = txtName.Text.Trim();
+                string species = txtSpecies.Text.Trim();
+                string ageText = txtAge.Text.Trim();
+                string scoreText = txtRecoveryScore.Text.Trim();
+
+                txtAnimalId.Text = id;
+
                 // check everything first
                 if (!CheckInputs(id, name, species, ageText, scoreText))
                 {
@@ -53,13 +60,9 @@ namespace BaobabRidgeWildlifeSystem
                 // member 2 grid refresh method
                 // ========================================NB====================================================
             }
-            catch (UnauthorizedAccessException)
+            catch (Exception ex)
             {
-                MessageBox.Show($"Access to animals.txt was denied:\n{filePath}\n\n" + "Check that the file is not read-only and that you have permission to use this folder.", "Permission Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (IOException ex)
-            {
-                MessageBox.Show($"A file error occurred while reading or writing animals.txt:\n{ex.Message}\n\n" + "Make sure the file is not open in another program, then check whether the " + "animal was saved before trying again.", "File Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ExceptionHandler.Handle(ex, "The animal could not be added.");
             }
         }
 
@@ -144,20 +147,34 @@ namespace BaobabRidgeWildlifeSystem
         // pop up the error and go back to the box
         private void ShowError(string message, TextBox box)
         {
-            MessageBox.Show(message, "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            box.Focus();
-            box.SelectAll();
+            try
+            {
+                MessageBox.Show(message, "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                box.Focus();
+                box.SelectAll();
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, "Could not show the validation message.");
+            }
         }
 
         // clear boxes
         private void ClearBoxes()
         {
-            txtAnimalId.Clear();
-            txtName.Clear();
-            txtSpecies.Clear();
-            txtAge.Clear();
-            txtRecoveryScore.Clear();
-            txtAnimalId.Focus();
+            try
+            {
+                txtAnimalId.Clear();
+                txtName.Clear();
+                txtSpecies.Clear();
+                txtAge.Clear();
+                txtRecoveryScore.Clear();
+                txtAnimalId.Focus();
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, "Could not clear the input boxes.");
+            }
         }
     }
 }

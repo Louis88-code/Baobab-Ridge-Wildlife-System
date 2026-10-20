@@ -18,9 +18,7 @@ namespace BaobabRidgeWildlifeSystem
         {
             if (!File.Exists(_filePath))
             {
-                throw new FileNotFoundException(
-                    $"Could not find '{Path.GetFileName(_filePath)}'. Place it in the solution folder or next to the application executable.",
-                    _filePath);
+                throw new FileNotFoundException($"Could not find '{Path.GetFileName(_filePath)}'. Place it in the solution folder or next to the application executable.",_filePath);
             }
 
             var animals = new List<AnimalRecord>();
@@ -57,8 +55,7 @@ namespace BaobabRidgeWildlifeSystem
                     continue;
                 }
 
-                if (!int.TryParse(fields[4], NumberStyles.Integer, CultureInfo.InvariantCulture, out int recoveryScore)
-                    || recoveryScore < 0 || recoveryScore > 100)
+                if (!int.TryParse(fields[4], NumberStyles.Integer, CultureInfo.InvariantCulture, out int recoveryScore) || recoveryScore < 0 || recoveryScore > 100)
                 {
                     errors.Add($"Line {index + 1}: Recovery Score must be a whole number between 0 and 100.");
                     continue;
@@ -90,7 +87,6 @@ namespace BaobabRidgeWildlifeSystem
             return animals;
         }
 
-        // removes the animal with the given record id from the file
         public bool DeleteAnimal(string recordId)
         {
             if (string.IsNullOrWhiteSpace(recordId) || !File.Exists(_filePath))

@@ -8,10 +8,25 @@ namespace BaobabRidgeWildlifeSystem
         [STAThread]
         static void Main()
         {
-            ApplicationConfiguration.Initialize();
+            try
+            {
+                // anything not caught inside a form is sent to the exception handler
+                Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+                Application.ThreadException += (sender, e) =>
+                    ExceptionHandler.Handle(e.Exception, "An unexpected error occurred.");
+                AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+                    ExceptionHandler.Handle(
+                        e.ExceptionObject as Exception ?? new Exception(e.ExceptionObject?.ToString()),
+                        "A fatal error occurred.");
 
-            // View Animals is the main screen. Add and Update open from its buttons.
-            Application.Run(new ViewAnimals());
+                ApplicationConfiguration.Initialize();
+
+                Application.Run(new ViewAnimals());
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler.Handle(ex, "The application could not start.");
+            }
         }
     }
 }
