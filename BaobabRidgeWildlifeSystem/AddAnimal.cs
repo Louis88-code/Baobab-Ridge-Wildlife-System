@@ -2,12 +2,12 @@ using System.Text.RegularExpressions;
 
 namespace BaobabRidgeWildlifeSystem
 {
-    public partial class Form1 : Form
+    public partial class AddAnimal : Form
     {
         // where the animals get saved
         private string filePath = Path.Combine(Application.StartupPath, "animals.txt");
 
-        public Form1()
+        public AddAnimal()
         {
             InitializeComponent();
         }
