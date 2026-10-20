@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Windows.Forms;
-
 namespace BaobabRidgeWildlifeSystem
 {
     public partial class UpdateAnimal : Form
@@ -10,7 +5,8 @@ namespace BaobabRidgeWildlifeSystem
         private Animal? selectedAnimal;
         private bool isEditMode = false;
 
-        private List<Animal> animals = new List<Animal>();
+        private readonly List<Animal> animals = new List<Animal>();
+        private readonly AnimalFileService fileService = new AnimalFileService();
 
         public UpdateAnimal()
         {
@@ -26,9 +22,7 @@ namespace BaobabRidgeWildlifeSystem
         {
             animals.Clear();
 
-            string filePath = Path.Combine(
-                AppContext.BaseDirectory,
-                "animals.txt");
+            string filePath = fileService.FilePath;
 
             if (!File.Exists(filePath))
             {
@@ -51,28 +45,42 @@ namespace BaobabRidgeWildlifeSystem
                 if (fields.Length != 7)
                     continue;
 
-                if (!int.TryParse(fields[3], out int age))
+                if (!int.TryParse(fields[3].Trim(), out int age) || age < 0)
                     continue;
 
-                if (!int.TryParse(fields[4], out int recoveryScore))
+                if (!int.TryParse(fields[4].Trim(), out int recoveryScore) ||
+                    recoveryScore < 0 || recoveryScore > 100)
                     continue;
 
-                Animal animal = new Animal
-                {
-                    ID = fields[0].Trim(),
-                    Name = fields[1].Trim(),
-                    Species = fields[2].Trim(),
-                    Age = age,
-                    RecoveryScore = recoveryScore,
-                    Status = fields[5].Trim(),
-                    HousingUnit = fields[6].Trim()
-                };
-
-                animals.Add(animal);
+                // status and housing are worked out from the score by the Animal class
+                animals.Add(new Animal(
+                    fields[0].Trim(),
+                    fields[1].Trim(),
+                    fields[2].Trim(),
+                    age,
+                    recoveryScore));
             }
 
+            RefreshGrid();
+        }
+
+        private void RefreshGrid()
+        {
             DGV1.DataSource = null;
             DGV1.DataSource = animals;
+
+            SetHeader("Id", "Animal ID");
+            SetHeader("Name", "Name");
+            SetHeader("Species", "Species");
+            SetHeader("Age", "Age");
+            SetHeader("RecoveryScore", "Recovery Score");
+            SetHeader("Status", "Status");
+            SetHeader("HousingUnit", "Housing Unit");
+        }
+
+        private void SetHeader(string propertyName, string headerText)
+        {
+            if (DGV1.Columns.Contains(propertyName)) DGV1.Columns[propertyName].HeaderText = headerText;
         }
 
         private void UpdateButton_Click(object? sender, EventArgs e)
@@ -88,8 +96,7 @@ namespace BaobabRidgeWildlifeSystem
                 return;
             }
 
-            Animal? animal =
-                DGV1.CurrentRow.DataBoundItem as Animal;
+            Animal? animal = DGV1.CurrentRow.DataBoundItem as Animal;
 
             if (animal == null)
             {
@@ -107,23 +114,20 @@ namespace BaobabRidgeWildlifeSystem
 
             btnSaveChanges.Enabled = true;
 
-            txtID.Text = animal.ID;
+            txtID.Text = animal.Id;
             txtName.Text = animal.Name;
             txtSpecies.Text = animal.Species;
             txtAge.Text = animal.Age.ToString();
-            txtRecoveryScore.Text =
-                animal.RecoveryScore.ToString();
-            txtStatus.Text = animal.Status;
-            txtHousing.Text = animal.HousingUnit;
+            txtRecoveryScore.Text = animal.RecoveryScore.ToString();
+            txtStatus.Text = animal.GetStatus();
+            txtHousing.Text = animal.GetHousingUnit();
         }
 
         private void SaveChangesButton_Click(object? sender, EventArgs e)
         {
             if (!isEditMode || selectedAnimal == null)
             {
-                MessageBox.Show(
-                    "Please select an animal and click Update first.");
-
+                MessageBox.Show("Please select an animal and click Update first.");
                 return;
             }
 
@@ -133,75 +137,84 @@ namespace BaobabRidgeWildlifeSystem
                 string.IsNullOrWhiteSpace(txtAge.Text) ||
                 string.IsNullOrWhiteSpace(txtRecoveryScore.Text))
             {
-                MessageBox.Show(
-                    "Please complete all required fields.");
-
+                MessageBox.Show("Please complete all required fields.");
                 return;
             }
 
-            if (!int.TryParse(txtAge.Text, out int age) ||
-                age < 0)
+            string newId = txtID.Text.Trim();
+            string newName = txtName.Text.Trim();
+            string newSpecies = txtSpecies.Text.Trim();
+
+            // '|' is the file separator, so it can't be part of the data
+            if (newId.Contains('|') || newName.Contains('|') || newSpecies.Contains('|'))
             {
-                MessageBox.Show(
-                    "Age must be a whole number greater than or equal to 0.");
-
+                MessageBox.Show("Fields cannot contain the '|' character.");
                 return;
             }
 
-            if (!int.TryParse(
-                    txtRecoveryScore.Text,
-                    out int recoveryScore) ||
-                recoveryScore < 0 ||
-                recoveryScore > 100)
+            // don't allow two animals with the same ID
+            bool duplicateId = animals.Any(a =>
+                !ReferenceEquals(a, selectedAnimal) &&
+                a.Id.Equals(newId, StringComparison.OrdinalIgnoreCase));
+
+            if (duplicateId)
             {
-                MessageBox.Show(
-                    "Recovery Score must be between 0 and 100.");
-
+                MessageBox.Show($"Animal ID '{newId}' already exists in the system.");
                 return;
             }
 
-            selectedAnimal.ID = txtID.Text.Trim();
-            selectedAnimal.Name = txtName.Text.Trim();
-            selectedAnimal.Species = txtSpecies.Text.Trim();
+            if (!int.TryParse(txtAge.Text.Trim(), out int age) || age < 0)
+            {
+                MessageBox.Show("Age must be a whole number greater than or equal to 0.");
+                return;
+            }
+
+            if (!int.TryParse(txtRecoveryScore.Text.Trim(), out int recoveryScore) ||
+                recoveryScore < 0 || recoveryScore > 100)
+            {
+                MessageBox.Show("Recovery Score must be between 0 and 100.");
+                return;
+            }
+
+            selectedAnimal.Id = newId;
+            selectedAnimal.Name = newName;
+            selectedAnimal.Species = newSpecies;
             selectedAnimal.Age = age;
             selectedAnimal.RecoveryScore = recoveryScore;
 
-            selectedAnimal.CalculateClassification();
+            // status and housing follow the new recovery score
+            txtStatus.Text = selectedAnimal.GetStatus();
+            txtHousing.Text = selectedAnimal.GetHousingUnit();
 
-            txtStatus.Text = selectedAnimal.Status;
-            txtHousing.Text = selectedAnimal.HousingUnit;
+            if (SaveAnimalsToFile())
+            {
+                RefreshGrid();
 
-            DGV1.Refresh();
+                MessageBox.Show(
+                    "Animal details updated successfully.",
+                    "Update Animal",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
 
-            SaveAnimalsToFile();
-
-            MessageBox.Show(
-                "Animal details updated successfully.",
-                "Update Animal",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
-
-            isEditMode = false;
-            selectedAnimal = null;
+                isEditMode = false;
+                selectedAnimal = null;
+                btnSaveChanges.Enabled = false;
+            }
         }
 
-        private void SaveAnimalsToFile()
+        private bool SaveAnimalsToFile()
         {
-            string filePath = @"C:\Users\lgcoe\OneDrive\Documents\PRG272 Project OCT 2026\BaobabRidgeWildlifeSystem\BaobabRidgeWildlifeSystem\animals.txt";
-
             List<string> lines = new List<string>();
 
             foreach (Animal animal in animals)
             {
-                lines.Add(
-                    $"{animal.ID}|{animal.Name}|{animal.Species}|" +
-                    $"{animal.Age}|{animal.RecoveryScore}|" +
-                    $"{animal.Status}|{animal.HousingUnit}");
+                lines.Add(animal.ToFileString());
             }
 
             try
             {
-                File.WriteAllLines(filePath, lines);
+                File.WriteAllLines(fileService.FilePath, lines);
+                return true;
             }
             catch (Exception ex)
             {
@@ -210,9 +223,10 @@ namespace BaobabRidgeWildlifeSystem
                     "File Saving Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
+
+                return false;
             }
         }
-
 
         private void ClearButton_Click(object? sender, EventArgs e)
         {
@@ -226,17 +240,12 @@ namespace BaobabRidgeWildlifeSystem
 
             selectedAnimal = null;
             isEditMode = false;
+            btnSaveChanges.Enabled = false;
 
             DGV1.ClearSelection();
         }
 
-        private void lblTitle_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void dataGridView1_CellContentClick(
-            object sender,
-            DataGridViewCellEventArgs e)
+        private void dataGridView1_CellContentClick(object? sender, DataGridViewCellEventArgs e)
         {
         }
     }

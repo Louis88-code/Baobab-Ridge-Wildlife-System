@@ -57,9 +57,10 @@ namespace BaobabRidgeWildlifeSystem
                     continue;
                 }
 
-                if (!decimal.TryParse(fields[4], NumberStyles.Number, CultureInfo.InvariantCulture, out decimal weight) || weight < 0)
+                if (!int.TryParse(fields[4], NumberStyles.Integer, CultureInfo.InvariantCulture, out int recoveryScore)
+                    || recoveryScore < 0 || recoveryScore > 100)
                 {
-                    errors.Add($"Line {index + 1}: Weight must be a number greater than or equal to 0.");
+                    errors.Add($"Line {index + 1}: Recovery Score must be a whole number between 0 and 100.");
                     continue;
                 }
 
@@ -69,9 +70,9 @@ namespace BaobabRidgeWildlifeSystem
                     Name = fields[1],
                     Species = fields[2],
                     Age = age,
-                    Weight = weight,
-                    HealthStatus = fields[5],
-                    Location = fields[6]
+                    RecoveryScore = recoveryScore,
+                    Status = fields[5],
+                    HousingUnit = fields[6]
                 });
             }
 
@@ -87,6 +88,40 @@ namespace BaobabRidgeWildlifeSystem
             }
 
             return animals;
+        }
+
+        // removes the animal with the given record id from the file
+        public bool DeleteAnimal(string recordId)
+        {
+            if (string.IsNullOrWhiteSpace(recordId) || !File.Exists(_filePath))
+                return false;
+
+            string[] lines = File.ReadAllLines(_filePath);
+            List<string> remainingLines = new List<string>();
+            bool animalDeleted = false;
+
+            foreach (string line in lines)
+            {
+                int separatorPosition = line.IndexOf('|');
+
+                if (separatorPosition >= 0 && !animalDeleted)
+                {
+                    string currentId = line.Substring(0, separatorPosition);
+
+                    if (currentId.Trim().Equals(recordId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        animalDeleted = true;
+                        continue;
+                    }
+                }
+
+                remainingLines.Add(line);
+            }
+
+            if (animalDeleted)
+                File.WriteAllLines(_filePath, remainingLines);
+
+            return animalDeleted;
         }
 
         private static string FindFile(string fileName)
@@ -113,55 +148,5 @@ namespace BaobabRidgeWildlifeSystem
 
             return Path.Combine(Directory.GetCurrentDirectory(), fileName);
         }
-
-
-     //Delete method to remove an animal record from the file based on the provided recordId.
-     
-    public bool DeleteAnimal(string recordId)
-   { 
-
-    if (string.IsNullOrWhiteSpace(recordId) ||
-    !File.Exists(_filePath))
-     {
-    return false;
-     }
-
-    string[] lines = File.ReadAllLines(_filePath);
-    List<string> remainingLines = new List<string>();
-
-    bool animalDeleted = false;
-
-    foreach (string line in lines)
-    {
-        int separatorPosition = line.IndexOf('|');
-
-        if (separatorPosition >= 0 && !animalDeleted)
-        {
-            string currentId = line.Substring(0, separatorPosition);
-
-            if (currentId.Trim().Equals(
-                recordId,
-                StringComparison.OrdinalIgnoreCase))
-            {
-                animalDeleted = true;
-                continue;
-            }
-        }
-
-        remainingLines.Add(line);
     }
-
-    if (animalDeleted)
-    {
-        File.WriteAllLines(_filePath, remainingLines);
-    }
-
-    return animalDeleted;
-  }
-
-
-        
-    }
-
-    
 }
