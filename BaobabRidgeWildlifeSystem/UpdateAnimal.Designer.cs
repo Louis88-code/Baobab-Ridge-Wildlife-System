@@ -1,6 +1,6 @@
 ﻿namespace BaobabRidgeWildlifeSystem
 {
-    partial class Form1
+    partial class UpdateAnimal
     {
         /// <summary>
         ///  Required designer variable.

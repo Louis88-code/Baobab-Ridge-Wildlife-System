@@ -5,14 +5,14 @@ using System.Windows.Forms;
 
 namespace BaobabRidgeWildlifeSystem
 {
-    public partial class Form1 : Form
+    public partial class UpdateAnimal : Form
     {
         private Animal? selectedAnimal;
         private bool isEditMode = false;
 
         private List<Animal> animals = new List<Animal>();
 
-        public Form1()
+        public UpdateAnimal()
         {
             InitializeComponent();
         }
