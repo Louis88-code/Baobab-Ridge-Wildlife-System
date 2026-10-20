@@ -113,5 +113,55 @@ namespace BaobabRidgeWildlifeSystem
 
             return Path.Combine(Directory.GetCurrentDirectory(), fileName);
         }
+
+
+     //Delete method to remove an animal record from the file based on the provided recordId.
+     
+    public bool DeleteAnimal(string recordId)
+   { 
+
+    if (string.IsNullOrWhiteSpace(recordId) ||
+    !File.Exists(_filePath))
+     {
+    return false;
+     }
+
+    string[] lines = File.ReadAllLines(_filePath);
+    List<string> remainingLines = new List<string>();
+
+    bool animalDeleted = false;
+
+    foreach (string line in lines)
+    {
+        int separatorPosition = line.IndexOf('|');
+
+        if (separatorPosition >= 0 && !animalDeleted)
+        {
+            string currentId = line.Substring(0, separatorPosition);
+
+            if (currentId.Trim().Equals(
+                recordId,
+                StringComparison.OrdinalIgnoreCase))
+            {
+                animalDeleted = true;
+                continue;
+            }
+        }
+
+        remainingLines.Add(line);
     }
+
+    if (animalDeleted)
+    {
+        File.WriteAllLines(_filePath, remainingLines);
+    }
+
+    return animalDeleted;
+  }
+
+
+        
+    }
+
+    
 }

@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using BaobabRidgeWildlifeSystem.Services;
 
 namespace BaobabRidgeWildlifeSystem
 {
@@ -92,7 +91,42 @@ namespace BaobabRidgeWildlifeSystem
 
         private void DeleteButton_Click(object? sender, EventArgs e)
         {
-            ShowFeatureNotice("Delete Animal", "Animal deletion is handled by the Delete Animal feature, not Option 2.");
+            if (animalsGrid.CurrentRow == null)
+    {
+        MessageBox.Show("Please select an animal to delete.");
+        return;
+    }
+
+    string recordId = animalsGrid.CurrentRow
+        .Cells["RecordId"].Value?.ToString() ?? "";
+
+    DialogResult answer = MessageBox.Show(
+        $"Are you sure you want to delete animal {recordId}?",
+        "Confirm Deletion",
+        MessageBoxButtons.YesNo,
+        MessageBoxIcon.Warning);
+
+    if (answer != DialogResult.Yes)
+        return;
+
+    try
+    {
+        var fileService = new AnimalFileService();
+
+        if (fileService.DeleteAnimal(recordId))
+        {
+            MessageBox.Show("Animal deleted successfully!");
+            LoadAnimals();
+        }
+        else
+        {
+            MessageBox.Show("Animal not found in the file.");
+        }
+    }
+    catch (IOException ex)
+    {
+        MessageBox.Show($"Could not delete animal: {ex.Message}");
+    }
         }
 
         private static void ShowFeatureNotice(string title, string message)
